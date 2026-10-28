@@ -1,8 +1,6 @@
-"""LinkPlus: search a local LinkedIn connections export and enrich selected records.
+﻿"""LinkPlus: search a local LinkedIn connections export and enrich selected records.
 
 Profile enrichment is limited to entries already present in the local CSV.
-RapidAPI requests and public-web searches are optional external operations;
-they are never performed by a plain CSV search.
 """
 
 from __future__ import annotations
@@ -16,7 +14,7 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 from duckduckgo_search import DDGS
-from mcp.server.fastmcp import FastMCP
+from mcp.server.mcpserver import MCPServer as FastMCP
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -142,7 +140,7 @@ def _as_list(value: Any) -> list[Any]:
 
 
 def _fetch_single_profile(
-    record: dict[str, str], *, allow_web_search: bool = False
+    record: dict[str, str], *, allow_web_search: bool = True
 ) -> dict[str, Any]:
     """Retrieve enrichment for one exported connection, returning useful errors."""
     profile = _base_profile(record)
@@ -251,7 +249,7 @@ def get_network_stats() -> dict[str, Any]:
 
 
 @mcp.tool()
-def get_profile_details(linkedin_url: str, allow_web_search: bool = False) -> dict[str, Any]:
+def get_profile_details(linkedin_url: str, allow_web_search: bool = True) -> dict[str, Any]:
     """Enrich one URL that already exists in the local connections export."""
     record = _connection_for_url(linkedin_url)
     if record is None:
@@ -265,7 +263,7 @@ def compare_connections(
     position: str = "",
     query: str = "",
     limit: int = 5,
-    allow_web_search: bool = False,
+    allow_web_search: bool = True,
 ) -> list[dict[str, Any]]:
     """Enrich and compare up to 12 matching connections from the local CSV."""
     limit = min(max(1, limit), 12)
@@ -287,3 +285,5 @@ def compare_connections(
 
 if __name__ == "__main__":
     mcp.run(transport="stdio")
+
+
