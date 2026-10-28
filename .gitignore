@@ -1,5 +1,7 @@
-﻿.env
+.env
 __pycache__/
 *.pyc
 data/Connections.csv
+data/enriched_cache.json
+data/enriched_cache.tmp
 .venv/
